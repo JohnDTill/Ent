@@ -1,6 +1,7 @@
 #ifndef EXPR_H
 #define EXPR_H
 
+#include <cassert>
 #include <string>
 #include <list>
 #include <vector>
@@ -10,10 +11,15 @@ enum ClassID{
     ID_APPEND_STRINGS,
     ID_ASSIGN_VAR,
     ID_BLOCK,
+    ID_CALL,
+    ID_EXPR_STMT,
+    ID_FUNCTION,
     ID_PRINT,
     ID_READ_VAR,
     ID_REASSIGN_VAR,
+    ID_RETURN,
     ID_STRING,
+    ID_VOID,
 };
 
 class Expr{
@@ -39,6 +45,13 @@ public:
     virtual Expr* clone() const = 0;
 
     template<typename T>
+    T* clone() const{
+        Expr* cl = clone();
+        assert(dynamic_cast<T*>(cl));
+        return static_cast<T*>(cl);
+    }
+
+    template<typename T>
     static std::vector<T*> makeClones(const std::vector<T*>& exprs){
         std::vector<T*> clones(exprs.size());
         for(typename std::vector<T*>::size_type i = 0; i < exprs.size(); i++)
@@ -48,5 +61,12 @@ public:
     virtual void deleteRecursive() = 0;
     virtual std::string toString() const = 0;
 };
+
+template<typename T>
+inline T ent_cast(Expr* e){
+    T cast = dynamic_cast<T>(e);
+    if(!cast) throw TypeException();
+    return cast;
+}
 
 #endif // EXPR_H

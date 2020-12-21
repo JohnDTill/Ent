@@ -1,13 +1,24 @@
 #include "runtime.h"
 
 #include <iostream>
+#include "expr.h"
 
-Runtime::Runtime(){
-
-}
+Runtime::Runtime(){}
 
 void Runtime::log(const std::string& msg){
     std::cout << msg << std::endl;
+}
+
+void Runtime::addScope(){
+    symbol_table.push_back(Scope());
+}
+
+void Runtime::removeScope(){
+    assert(symbol_table.size());
+    Scope& scope = symbol_table.back();
+    for(Scope::iterator it = scope.begin(); it != scope.end(); it++)
+        it->second.expr->deleteRecursive();
+    symbol_table.pop_back();
 }
 
 Var& Runtime::findVar(const std::string& name){
@@ -18,4 +29,10 @@ Var& Runtime::findVar(const std::string& name){
     }
 
     throw VarNotFoundException(name);
+}
+
+void Runtime::assignVar(bool is_const, const std::string& name, Expr* rhs){
+    Scope& scope = symbol_table.back();
+    if(scope.find(name) != scope.end()) throw RedeclareVarException(name);
+    scope.insert({name, Var(is_const, name, rhs)});
 }

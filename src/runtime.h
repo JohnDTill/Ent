@@ -20,11 +20,21 @@ struct Var{
 typedef std::unordered_map<std::string, Var> Scope;
 typedef std::vector<Scope> SymbolTable;
 
+struct ArityException : public std::exception{
+public:
+    ArityException(){}
+};
+
 struct RedeclareVarException : public std::exception{
 public:
     const std::string name;
     RedeclareVarException(const std::string& name)
         : name(name){}
+};
+
+struct TypeException : public std::exception{
+public:
+    TypeException(){}
 };
 
 struct VarNotFoundException : public std::exception{
@@ -48,7 +58,10 @@ public:
 public:
     Runtime();
     void log(const std::string& msg);
+    void addScope();
+    void removeScope();
     Var& findVar(const std::string& name);
+    void assignVar(bool is_const, const std::string& name, Expr* rhs);
 };
 
 #endif // RUNTIME_H
