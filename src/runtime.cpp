@@ -5,6 +5,15 @@
 
 Runtime::Runtime(){}
 
+Runtime::~Runtime(){
+    removeScope();
+    assert(symbol_table.empty());
+
+    #ifndef ENT_DISABLE_SERIAL_ASSERTIONS
+    assert(Expr::all_exprs.empty());
+    #endif
+}
+
 void Runtime::log(const std::string& msg){
     std::cout << msg << std::endl;
 }

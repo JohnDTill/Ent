@@ -3,7 +3,7 @@
 
 #include "ent.h"
 
-int main(){
+void helloWorld(){
     Stmt* asgn = new AssignVar(true, "x", new AppendStrings({new String("Hello "), new String("world!")}));
     Stmt* prnt = new Print( new ReadVar("x") );
     Stmt* body = new Block( {asgn, prnt} );
@@ -14,8 +14,22 @@ int main(){
 
     Runtime runtime;
     stmt->exec(runtime);
-    runtime.removeScope();
     stmt->deleteRecursive();
+}
 
-    assert(Expr::all_exprs.empty());
+void arrayStuff(){
+    Expr* array = new Array({new String("Hello"), new String("World"), new String("!")});
+    Stmt* write = new AssignVar(false, "X", array);
+    Stmt* print = new Print(new ReadVar("X"));
+    Stmt* modify = new ReassignLValue(new AccessArrayElement(new AccessVar("X"), 2), new String("?"));
+    Stmt* stmt = new Block({write, print, modify, print->clone<Stmt>()});
+
+    Runtime runtime;
+    stmt->exec(runtime);
+    stmt->deleteRecursive();
+}
+
+int main(){
+    helloWorld();
+    arrayStuff();
 }

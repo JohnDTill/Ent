@@ -8,7 +8,10 @@
 #include "runtime.h"
 
 enum ClassID{
+    ID_ACCESS_ARRAY_ELEMENT,
+    ID_ACCESS_VAR,
     ID_APPEND_STRINGS,
+    ID_ARRAY,
     ID_ASSIGN_VAR,
     ID_BLOCK,
     ID_CALL,
@@ -16,6 +19,7 @@ enum ClassID{
     ID_FUNCTION,
     ID_PRINT,
     ID_READ_VAR,
+    ID_REASSIGN_LVALUE,
     ID_REASSIGN_VAR,
     ID_RETURN,
     ID_STRING,
@@ -51,7 +55,7 @@ public:
         return static_cast<T*>(cl);
     }
 
-    template<typename T>
+    template<typename T = Expr>
     static std::vector<T*> makeClones(const std::vector<T*>& exprs){
         std::vector<T*> clones(exprs.size());
         for(typename std::vector<T*>::size_type i = 0; i < exprs.size(); i++)

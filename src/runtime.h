@@ -25,6 +25,11 @@ public:
     ArityException(){}
 };
 
+struct ArrayOutOfBoundsException : public std::exception{
+public:
+    ArrayOutOfBoundsException(){}
+};
+
 struct RedeclareVarException : public std::exception{
 public:
     const std::string name;
@@ -57,6 +62,7 @@ public:
 
 public:
     Runtime();
+    ~Runtime();
     void log(const std::string& msg);
     void addScope();
     void removeScope();
